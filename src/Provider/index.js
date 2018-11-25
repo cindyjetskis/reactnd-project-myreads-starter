@@ -6,6 +6,7 @@ export const MyContext = React.createContext();
 export default class index extends Component {
     constructor(){
         super();
+        
         this.state = {
             books: [],
             currentlyReading: [],
@@ -21,28 +22,32 @@ export default class index extends Component {
             },
         
             changeBook: (book, newShelf, allShelves) => {
-                const newBooks = this.state.books.map(allBooks => {
-                    const foundBookID = allShelves[newShelf].find(
-                        bookID => bookID === allBooks.id
-                    );
-                    if(foundBookID) {
-                        allBooks.shelf = newShelf;
-                    }
+                if(newShelf === 'move') return;
+                
+                const newBooks = newShelf === 'none'
+                    ? this.state.books.filter(({ id }) => id !== book.id)
+                    : this.state.books.map(allBooks => {                    
+                        const foundBookID = newShelf !== 'none' && allShelves[newShelf].find(
+                            bookID => bookID === allBooks.id
+                        );
+    
+                        if(foundBookID) {
+                            allBooks.shelf = newShelf;
+                        }
+    
+                        return allBooks;                 
+                    });
 
-                    return allBooks;
-
-                 
-                });
                 this.state.addBook(newBooks);
             }
-
         };
     }
 
     render() {
-        return (<MyContext.Provider value = {{...this.state}}>
-        {this.props.children}
-        </MyContext.Provider>
+        return (
+            <MyContext.Provider value = {{...this.state}}>
+                {this.props.children}
+            </MyContext.Provider>
         );
     }
 }

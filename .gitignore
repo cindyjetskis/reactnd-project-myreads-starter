@@ -1,3 +1,11 @@
+# .gitignore
+
+# ignore dependencies
 node_modules
-yarn.lock
+
 .DS_Store
+
+# ignore logs
+logs
+*.log
+npm-debug.log*
